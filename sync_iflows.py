@@ -57,11 +57,31 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from dotenv import load_dotenv
-
-# Explicitly load the environment file from \config\customer.env
+# --------------------------------------------------------------------------
+# Config & Environment Fallback (No python-dotenv required)
+# --------------------------------------------------------------------------
+# Explicitly check for local environment file from \config\customer.env
 env_path = Path(__file__).parent / "config" / "customer.env"
-load_dotenv(dotenv_path=env_path)
+
+if env_path.exists():
+    logging.info("Loading local configurations from %s", env_path)
+    with open(env_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            # Skip comments and empty lines
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, val = line.split("=", 1)
+            # Strip potential quotes around values
+            os.environ[key.strip()] = val.strip().strip("'\"")
+
+
+def _env(name: str, default: str | None = None, required: bool = False) -> str | None:
+    v = os.environ.get(name, default)
+    if required and not v:
+        logging.error("Missing required environment variable: %s", name)
+        sys.exit(1)
+    return v
 
 
 # --------------------------------------------------------------------------
