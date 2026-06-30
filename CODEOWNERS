@@ -1,0 +1,15 @@
+# Code owners for the CPI iFlow GitOps repository.
+# Replace the placeholder team/user handles before committing.
+#
+# Format: <pattern>  <owner1> [owner2 ...]
+# Owners listed here are auto-requested for review on PRs touching the path.
+
+# Synced iFlow content — Integration Architects must approve any changes.
+iflows/                       @your-org/integration-architects
+
+# Automation scripts and workflows — DevOps owns these.
+sync_iflows.py                @your-org/devops
+.github/workflows/            @your-org/devops
+
+# Documentation
+*.md                          @your-org/integration-architects @your-org/devops
